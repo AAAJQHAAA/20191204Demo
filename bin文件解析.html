@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>解析bin文件</h2>
+<input type="file" id="inputBox">
+<div id="data"></div>
+<script>
+    var getFile;
+window.onload=function(){
+    file =document.getElementById("inputBox");
+    console.log(file)
+    file.onchange=function(e){
+        console.log(file.files[0])
+        //获取到文件以后就会返回一个对象，通过这个对象即可获取文件
+        // console.log(e)//文件名
+        if(window.FileReader) {
+    var reader = new FileReader();
+    // add your code here
+	reader.readAsArrayBuffer(file.files[0]);//发起异步请求
+	//reader.readAsArrayBuffer("http://127.0.0.1:8010/DrawImage.JPG");//发起异步请求
+	reader.onload = function(e){
+	    console.log(e)
+		//读取完成后，数据保存在对象的result属性中
+        let result=new Int16Array(e.target.result)
+        console.log(result)
+        console.log(result.length)
+        let data=[]
+        var a=409
+        console.log(result[0].toString(16))
+        console.log(a.toString(16))
+        for(let i of result){
+            let num16=i.toString(16)
+            switch (num16.length) {
+                case 1:
+                case 2:
+                    data.push(parseInt(num16,16))
+                    data.push(0)
+                    break
+                case 3:
+                    data.push(parseInt(num16.substring(1),16))
+                    data.push(parseInt(num16.substring(0,1),16))
+                    break
+                case 4:
+                    data.push(parseInt(num16.substring(2),16))
+                    data.push(parseInt(num16.substring(0,2),16))
+                    break
+            }
+        }
+        console.log(data)
+        alert(data)
+        document.getElementById('data').innerText=data;
+	}
+}
+else {
+    alert("Not supported by your browser!");
+}}
+}
+</script>
+
+</body>
+</html>
